@@ -1,0 +1,36 @@
+function gaussJordan(A: number[][], b: number[]): number[] {
+  const n = A.length;
+  const AB = [...A.map(row => [...row]), [...b]]; // création de la matrice augmentée AB
+  for (let j = 0; j < n; j++) {
+    // recherche du pivot
+    let pivotRow = j;
+    let pivot = Math.abs(AB[j][j]);
+    for (let i = j + 1; i < n; i++) {
+      const absVal = Math.abs(AB[i][j]);
+      if (absVal > pivot) {
+        pivotRow = i;
+        pivot = absVal;
+      }
+    }
+    // échange de lignes pour mettre le pivot sur la diagonale
+    if (pivotRow !== j) {
+      [AB[j], AB[pivotRow]] = [AB[pivotRow], AB[j]];
+    }
+    // division de la ligne par le pivot pour obtenir un 1 sur la diagonale
+    const pivotVal = AB[j][j];
+    for (let k = j; k < 2 * n; k++) {
+      AB[j][k] /= pivotVal;
+    }
+    // élimination des autres variables dans cette colonne
+    for (let i = 0; i < n; i++) {
+      if (i !== j) {
+        const factor = AB[i][j];
+        for (let k = j; k < 2 * n; k++) {
+          AB[i][k] -= factor * AB[j][k];
+        }
+      }
+    }
+  }
+  // retourne la solution
+  return AB.map(row => row[n]);
+}
